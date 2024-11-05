@@ -14,6 +14,16 @@ public class BaseItem {
     @Column(nullable = false)
     private String description;
 
+    public BaseItem() {
+
+    }
+
+    public BaseItem(Long id, String icon, String description) {
+        this.id = id;
+        this.icon = icon;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }
