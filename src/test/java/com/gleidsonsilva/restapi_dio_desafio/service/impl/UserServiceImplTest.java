@@ -47,7 +47,6 @@ class UserServiceImplTest {
     public static final String USER_TO_CREATE_MUST_NOT_BE_NULL = "User to create must not be null";
     public static final String USER_ACCOUNT_MUST_NOT_BE_NULL = "User account must not be null";
     public static final String USER_CARD_MUST_NOT_BE_NULL = "User card must not be null";
-    public static final String USER_NAME_TO_CREATE_MUST_NOT_BE_NULL = "User name to create must not be null";
     public static final String UPDATE_IDS_MUST_BE_THE_SAME = "Update IDs must be the same";
     public static final String THIS_CARD_NUMBER_ALREADY_EXISTS = "This card number already exists";
     public static final String THIS_ACCOUNT_NUMBER_ALREADY_EXISTS = "This Account number already exists";
@@ -150,10 +149,10 @@ class UserServiceImplTest {
 
     @Test
     void whenCreateThenReturnBusinessExceptionOnNullUserName() {
-        user1.setName(null);
-        Exception exception = assertThrows(BusinessException.class, () -> service.create(user1));
-        assertEquals(USER_NAME_TO_CREATE_MUST_NOT_BE_NULL, exception.getMessage());
-        verify(repository, never()).save(user1);
+        user2.setName(null);
+        Exception exception = assertThrows(BusinessException.class, () -> service.create(user2));
+        assertEquals(USER_NAME_MUST_NOT_BE_NULL, exception.getMessage());
+        verify(repository, never()).save(user2);
     }
 
     @Test
