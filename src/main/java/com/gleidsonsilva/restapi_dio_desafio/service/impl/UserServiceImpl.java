@@ -4,7 +4,6 @@ import com.gleidsonsilva.restapi_dio_desafio.domain.model.User;
 import com.gleidsonsilva.restapi_dio_desafio.domain.repository.UserRepository;
 import com.gleidsonsilva.restapi_dio_desafio.service.UserService;
 import com.gleidsonsilva.restapi_dio_desafio.service.exception.BusinessException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,7 +42,7 @@ public class UserServiceImpl implements UserService {
         this.validateChangeableId(user.getId(), "created");
 
         if (this.userRepository.existsByAccountNumber(user.getAccount().getNumber())) {
-            throw new IllegalArgumentException("This Account number already exists.");
+            throw new BusinessException("This Account number already exists.");
         }
 
         if (this.userRepository.existsByCardNumber(user.getCard().getNumber())) {
