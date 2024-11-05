@@ -35,8 +35,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public User create(User user) {
-        this.validateChangeableId(user.getId(), "created");
         this.validateUserToSave(user);
+        this.validateChangeableId(user.getId(), "created");
         return this.userRepository.save(user);
     }
 
