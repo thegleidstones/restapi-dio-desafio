@@ -35,20 +35,8 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public User create(User user) {
-        ofNullable(user).orElseThrow(() -> new BusinessException("User to create must not be null."));
-        ofNullable(user.getAccount()).orElseThrow(() -> new BusinessException("User account must not be null"));
-        ofNullable(user.getCard()).orElseThrow(() -> new BusinessException("User card must not be null"));
-
         this.validateChangeableId(user.getId(), "created");
-
-        if (this.userRepository.existsByAccountNumber(user.getAccount().getNumber())) {
-            throw new BusinessException("This Account number already exists.");
-        }
-
-        if (this.userRepository.existsByCardNumber(user.getCard().getNumber())) {
-            throw new BusinessException("This card number already exists");
-        }
-
+        this.validateUserToSave(user);
         return this.userRepository.save(user);
     }
 
@@ -62,11 +50,8 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException("Update IDs must be the same");
         }
 
-        existingUser.setName(userToUpdate.getName());
-        existingUser.setAccount(userToUpdate.getAccount());
-        existingUser.setCard(userToUpdate.getCard());
-        existingUser.setFeatures(userToUpdate.getFeatures());
-        existingUser.setNews(userToUpdate.getNews());
+        this.validateUserToSave(userToUpdate);
+        this.parseUserToUpdate(existingUser, userToUpdate);
 
         return this.userRepository.save(existingUser);
     }
@@ -82,7 +67,30 @@ public class UserServiceImpl implements UserService {
 
     private void validateChangeableId(Long id, String operation) {
         if (UNCHANGEALBE_USER_ID.equals(id)) {
-            throw new BusinessException("User with ID %d can not be %s.".formatted(UNCHANGEALBE_USER_ID, operation));
+            throw new BusinessException("User with ID %d can not be %s".formatted(UNCHANGEALBE_USER_ID, operation));
         }
+    }
+
+    private void validateUserToSave(User user) {
+        ofNullable(user).orElseThrow(() -> new BusinessException("User to create must not be null"));
+        ofNullable(user.getName()).orElseThrow(() -> new BusinessException("User name must not be null"));
+        ofNullable(user.getAccount()).orElseThrow(() -> new BusinessException("User account must not be null"));
+        ofNullable(user.getCard()).orElseThrow(() -> new BusinessException("User card must not be null"));
+
+        if (this.userRepository.existsByAccountNumber(user.getAccount().getNumber())) {
+            throw new BusinessException("This Account number already exists");
+        }
+
+        if (this.userRepository.existsByCardNumber(user.getCard().getNumber())) {
+            throw new BusinessException("This card number already exists");
+        }
+    }
+
+    private void parseUserToUpdate(User existingUser, User userToUpdate ) {
+        existingUser.setName(userToUpdate.getName());
+        existingUser.setAccount(userToUpdate.getAccount());
+        existingUser.setCard(userToUpdate.getCard());
+        existingUser.setFeatures(userToUpdate.getFeatures());
+        existingUser.setNews(userToUpdate.getNews());
     }
 }
