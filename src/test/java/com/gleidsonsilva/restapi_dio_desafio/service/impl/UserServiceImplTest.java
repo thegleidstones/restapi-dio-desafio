@@ -180,17 +180,31 @@ class UserServiceImplTest {
 
     @Test
     void whenCreateThenThrowsBusinessExceptionOnAccountNumberAlreadyExists() {
-        when(repository.existsByAccountNumber(anyString())).thenReturn(true);
-        Exception exception = assertThrows(BusinessException.class, () -> service.create(user2));
-        assertEquals(THIS_ACCOUNT_NUMBER_ALREADY_EXISTS, exception.getMessage());
+        when(repository.findByAccountNumber(anyString())).thenReturn(Optional.of(user2));
+
+        try {
+            user2.setId(0L);
+            service.create(user2);
+        } catch (Exception exception) {
+            assertEquals(THIS_ACCOUNT_NUMBER_ALREADY_EXISTS, exception.getMessage());
+            assertInstanceOf(BusinessException.class, exception);
+            verify(repository, never()).save(user2);
+        }
+
     }
 
     @Test
     void whenCreateThenThrowsBusinessExceptionOnCardNumberAlreadyExists() {
-        when(repository.existsByCardNumber(anyString())).thenReturn(true);
-        Exception exception = assertThrows(BusinessException.class, () -> service.create(user2));
-        assertEquals(THIS_CARD_NUMBER_ALREADY_EXISTS, exception.getMessage());
-        verify(repository, never()).save(any());
+        when(repository.findByCardNumber(anyString())).thenReturn(Optional.of(user2));
+
+        try {
+            user2.setId(0L);
+            service.create(user2);
+        } catch (Exception exception) {
+            assertEquals(THIS_CARD_NUMBER_ALREADY_EXISTS, exception.getMessage());
+            assertInstanceOf(BusinessException.class, exception);
+            verify(repository, never()).save(any());
+        }
     }
 
     @Test
