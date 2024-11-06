@@ -7,7 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 class RestapiDioDesafioApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void main() {
+		RestapiDioDesafioApplication.main(new String[] {});
 	}
 
 }

@@ -2,8 +2,6 @@ package com.gleidsonsilva.restapi_dio_desafio.service;
 
 import com.gleidsonsilva.restapi_dio_desafio.domain.model.User;
 
-public interface UserService {
-    User findById(Long id);
+public interface UserService extends CrudService<User, Long> {
 
-    User create(User user);
 }
