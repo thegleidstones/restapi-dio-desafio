@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
 
@@ -77,11 +78,28 @@ public class UserServiceImpl implements UserService {
         ofNullable(user.getAccount()).orElseThrow(() -> new BusinessException("User account must not be null"));
         ofNullable(user.getCard()).orElseThrow(() -> new BusinessException("User card must not be null"));
 
-        if (this.userRepository.existsByAccountNumber(user.getAccount().getNumber())) {
+//        if (this.userRepository.existsByAccountNumber(user.getAccount().getNumber()) && user.getId().equals(id)) {
+//            throw new BusinessException("This Account number already exists");
+//        }
+//
+//        if (this.userRepository.existsByCardNumber(user.getCard().getNumber())) {
+//            throw new BusinessException("This card number already exists");
+//        }
+
+        findByAccountNumber(user);
+        findByCardNumber(user);
+    }
+
+    private void findByAccountNumber(User user) {
+        Optional<User> existingUser = userRepository.findByAccountNumber(user.getAccount().getNumber());
+        if (existingUser.isPresent() && !existingUser.get().getId().equals(user.getId())) {
             throw new BusinessException("This Account number already exists");
         }
+    }
 
-        if (this.userRepository.existsByCardNumber(user.getCard().getNumber())) {
+    private void findByCardNumber(User user) {
+        Optional<User> existingUser = userRepository.findByCardNumber(user.getCard().getNumber());
+        if (existingUser.isPresent() && !existingUser.get().getId().equals(user.getId())) {
             throw new BusinessException("This card number already exists");
         }
     }
